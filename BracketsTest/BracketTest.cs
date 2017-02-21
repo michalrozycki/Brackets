@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Brackets;
 
 namespace Tests
@@ -8,7 +7,7 @@ namespace Tests
     public class BracketTest
     {
         [TestMethod]
-        public void Common()
+        public void BracketTests()
         {
             var input = "(()())";
             Assert.AreEqual("possible", Program.steps(input));
@@ -48,21 +47,9 @@ namespace Tests
 
             input = ")))(";
             Assert.AreEqual("impossible", Program.steps(input));
-        }
 
-        [TestMethod]
-        public void Special()
-        {
-            var input = "(()))(()(";
+            input = "(()))(()(";
             Assert.AreEqual("impossible", Program.steps(input));
-
-            input = "";
-            for (var i = 0; i < 5000; i++)
-            {
-                var r = new Random();
-                input += (r.Next() < .5) ? '(' : ')';
-            }
-            //Assert.AreEqual("possible", Program.steps(input));
         }
     }
 }
