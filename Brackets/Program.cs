@@ -3,102 +3,91 @@ using System.Collections.Generic;
 
 namespace Brackets
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            string input ="";
-            //input = "(()())"; //possible
-            // input = ")))("; //impossible
-            //input = "()))"; //possible
-            //input = "()()()())()()()())"; //possible
-            //input = "(())"; //p
-            //input = "()()"; // p
-            //input = "(()())()";// p
-            //input = "(";// i
-            // input = "())";// i
-            //input = "";//p
-            //input = "())("; //p
-            //input = "()))"; //p
-            //input = ")))("; //i
-            ///input = ")))))(((((()()()(())";
-            //input = "(((()()())()(((()()())()(((()()()))))((()()())))(((()()())))(((()()()))(";
-            //var r = new Random();
-            //for (var i = 0; i < 5000; i++)
-            //{
-            //   input += (r.Next() <.5) ? '(' : ')';
-            //}
-
+            string input = "";
             string line;
             List<string> lines = new List<string>();
             while ((line = Console.ReadLine()) != null) lines.Add(line);
             input = lines[0];
 
-            if (isValid(input))
-            {
-                Console.WriteLine("possible");
-                return;
-            }
-            
-            //var incorrectRage = split("(()))(()(");
-            var incorrectRage = split(input);
-            //if (incorrectRage.Count == 1)
-            //{
-            //    var sub = input.Substring(incorrectRage[0][0], incorrectRage[0][1] - incorrectRage[0][0] +1);
-            //    if (search(sub))
-            //    {
-            //        Console.WriteLine("possible");
-            //        return;
-            //    }
-            //}
-
-            var poss = true;
-            foreach (var e in incorrectRage)
-            {
-                var sub = input.Substring(e[0], e[1] - e[0] + 1);
-                if (!search(sub))
-                {
-                    poss = false;
-                }
-            }
-            if (poss)
-            {
-                Console.WriteLine("possible");
-                return;
-            }
-
-
-           // if  (incorrectRage.Count>1)
-           // {
-            //    Console.WriteLine("impossible");
-            //}
-
-           // return;
-           //if (input.Length >1000 && incorrectRage.Count>1)
-           // {
-           //     Console.WriteLine("impossible");
-           //     return;
-           // }
-
-           // if (search(input))
-           // {
-           //     Console.WriteLine("possible");
-           // }
-           // else
-         //   {
-                Console.WriteLine("impossible");
-           // }
-            // Console.ReadLine();
+            Console.WriteLine(steps(input));
         }
 
-        public static List<int[]> split (string input)
+        public static string steps(string input)
+        {
+            if (input.Length % 2 != 0)
+            {
+                return "impossible";
+            }
+
+            // '(' = true, ')' = false
+            bool[] inputBool = new bool[input.Length];
+            for (var i = 0; i <= input.Length - 1; i++)
+            {
+                if (input[i] == '(')
+                {
+                    inputBool[i] = true;
+                }
+                else
+                {
+                    inputBool[i] = false;
+                }
+            }
+
+            if (isValid(inputBool))
+            {
+                return "possible";
+            }
+
+            // One block
+            var incorrectRage = split(inputBool);
+            if (incorrectRage.Count == 1)
+            {
+                var sub = new bool[incorrectRage[0][1] - incorrectRage[0][0] + 1];
+                Array.Copy(inputBool, incorrectRage[0][0], sub, 0, sub.Length);
+                if (search(sub))
+                {
+                    return "possible";
+                }
+            }
+
+            // All bloks
+            //var incorrectRage = split(inputBool);
+            //var poss = true;
+            //foreach (var e in incorrectRage)
+            //{
+            //    var sub = new bool[e[1] - e[0] + 1];
+            //    Array.Copy(inputBool, e[0], sub, 0, sub.Length);
+            //    if (!search(sub))
+            //    {
+            //        poss = false;
+            //    }
+            //}
+            //if (poss)
+            //{
+            //    return "possible";
+            //}
+
+            // Broute force
+            if (search(inputBool))
+            {
+                return "possible";
+            }
+
+            return "impossible";
+        }
+
+        public static List<int[]> split(bool[] input)
         {
             var correctRages = new List<int[]>();
             var count = 0;
             var begin = 0;
             for (var i = 0; i <= input.Length - 1; i++)
             {
-                if (input[i] == '(')
+                if (input[i])
                 {
                     count++;
                 }
@@ -108,7 +97,8 @@ namespace Brackets
                 }
                 if (count == 0)
                 {
-                    var sub = input.Substring(begin, i - begin +1);
+                    var sub = new bool[i - begin + 1];
+                    Array.Copy(input, begin, sub, 0, sub.Length);
                     if (isValid(sub))
                     {
                         int[] rage = { begin, i };
@@ -125,7 +115,7 @@ namespace Brackets
                     incorrectBrackets.Add(i);
                 }
             }
-            var incorrectRages = new List<int[]>(); 
+            var incorrectRages = new List<int[]>();
             var start = 0;
             // 0123..
             // 3458
@@ -136,7 +126,7 @@ namespace Brackets
                 {
                     start = incorrectBrackets[i];
                 }
-                if ((i == incorrectBrackets.Count-1) || (incorrectBrackets[i + 1] != incorrectBrackets[i] + 1))
+                if ((i == incorrectBrackets.Count - 1) || (incorrectBrackets[i + 1] != incorrectBrackets[i] + 1))
                 {
                     int[] rage = { start, incorrectBrackets[i] };
                     incorrectRages.Add(rage);
@@ -149,7 +139,7 @@ namespace Brackets
         {
             foreach (var e in list)
             {
-                if (e[0]<=index && e[1] >=index)
+                if (e[0] <= index && e[1] >= index)
                 {
                     return true;
                 }
@@ -157,13 +147,15 @@ namespace Brackets
             return false;
         }
 
-        public static bool search(string input)
+        public static bool search(bool[] input)
         {
             for (var i = 0; i <= input.Length - 1; i++)
             {
                 for (var j = input.Length - 1; j >= 0; j--)
                 {
-                    var swapResult = swap(input, i, j);
+                    var sub = new bool[input.Length];
+                    Array.Copy(input, 0, sub, 0, sub.Length);
+                    var swapResult = swap(sub, i, j);
                     if (isValid(swapResult))
                     {
                         return true;
@@ -173,31 +165,28 @@ namespace Brackets
             return false;
         }
 
-        public static string swap(string input, int left, int right)
+        public static bool[] swap(bool[] input, int left, int right)
         {
-            var chars = input.ToCharArray();
-
             for (var i = left; i <= right; i++)
             {
-                if (chars[i] == '(')
+                if (input[i])
                 {
-                    chars[i] = ')';
-                } 
+                    input[i] = false;
+                }
                 else
                 {
-                    chars[i] = '(';
+                    input[i] = true;
                 }
             }
-            return new string(chars);
+            return input;
         }
 
-        public static bool isValid(string input)
+        public static bool isValid(bool[] input)
         {
-            var chars = input.ToCharArray();
             var count = 0;
-            foreach (var ch in chars)
+            foreach (var ch in input)
             {
-                if (ch == '(')
+                if (ch)
                 {
                     count++;
                 }

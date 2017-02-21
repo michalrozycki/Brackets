@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brackets", "Brackets\Brackets.csproj", "{03A8C901-6ADF-462D-97FD-A4033FF9E7D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{3AB0ED5B-E2EA-4637-9FC9-C10CBC5CEA87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "UnitTestProject1\Tests.csproj", "{3AB0ED5B-E2EA-4637-9FC9-C10CBC5CEA87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
