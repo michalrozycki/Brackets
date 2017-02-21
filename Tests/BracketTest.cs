@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Brackets;
 
-namespace UnitTestProject1
+namespace Tests
 {
     [TestClass]
     public class BracketTest
